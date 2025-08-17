@@ -1,0 +1,282 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>SE-COMISCA | Interoperabilidad en Salud — Recursos & Código</title>
+  <meta name="description" content="Repositorio de recursos, código y guías para la interoperabilidad en salud impulsada por SE-COMISCA en la región SICA." />
+  <meta property="og:title" content="SE-COMISCA | Interoperabilidad en Salud" />
+  <meta property="og:description" content="Recursos prácticos, ejemplos de código, guías FHIR y terminologías para proyectos de salud digital en SICA." />
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="./assets/social-card.png" />
+  <meta name="theme-color" content="#0ea5e9" />
+  <link rel="icon" href="./assets/favicon.png" />
+  <style>
+    :root {
+      --bg: #0b1220;        /* fondo oscuro elegante */
+      --panel: #0f172a;     /* paneles */
+      --text: #e2e8f0;      /* texto base */
+      --muted: #94a3b8;     /* texto secundario */
+      --brand: #0ea5e9;     /* cian */
+      --brand-2: #22d3ee;   /* cian claro */
+      --accent: #34d399;    /* verde */
+      --card: #111827;      /* tarjetas */
+      --border: #1f2937;    /* bordes */
+      --shadow: rgba(2, 6, 23, 0.6);
+    }
+    @media (prefers-color-scheme: light) {
+      :root { --bg:#f8fafc; --panel:#ffffff; --text:#0f172a; --muted:#475569; --card:#ffffff; --border:#e2e8f0; --shadow:rgba(15,23,42,.08); }
+    }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; }
+    body {
+      margin: 0; font-family: system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, Noto Sans, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
+      background: radial-gradient(1200px 600px at 10% -10%, rgba(34,211,238,.12), transparent 60%),
+                  radial-gradient(800px 400px at 90% 0%, rgba(14,165,233,.14), transparent 60%), var(--bg);
+      color: var(--text);
+    }
+    a { color: inherit; text-decoration: none; }
+    .container { max-width: 1100px; margin: 0 auto; padding: 24px; }
+    header {
+      position: sticky; top: 0; z-index: 30; backdrop-filter: blur(8px);
+      background: color-mix(in oklab, var(--bg) 85%, transparent);
+      border-bottom: 1px solid var(--border);
+    }
+    .nav { display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 14px 0; }
+    .brand { display:flex; align-items:center; gap:10px; font-weight:700; letter-spacing:.2px; }
+    .logo { width: 28px; height: 28px; border-radius: 8px; background: linear-gradient(135deg, var(--brand), var(--brand-2)); box-shadow: 0 6px 16px var(--shadow); position: relative; }
+    .logo::after { content:""; position:absolute; inset:4px; border-radius:6px; background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.6), transparent 40%); mix-blend-mode: overlay; }
+    .nav a.link { opacity:.9; font-weight:500; padding: 8px 10px; border-radius: 8px; }
+    .nav a.link:hover { background: color-mix(in oklab, var(--panel) 86%, transparent); }
+    .btn { display:inline-flex; align-items:center; gap:10px; padding: 10px 14px; border-radius: 12px; border:1px solid var(--border); background: linear-gradient(180deg, color-mix(in oklab, var(--panel) 86%, transparent), color-mix(in oklab, var(--panel) 96%, transparent)); box-shadow: 0 8px 22px var(--shadow); font-weight: 600; }
+    .btn:hover { transform: translateY(-1px); transition: .2s ease; }
+
+    .hero { display:grid; grid-template-columns: 1.2fr 1fr; gap: 28px; align-items: center; padding: 40px 0 12px; }
+    .hero h1 { font-size: clamp(28px, 4vw, 44px); line-height: 1.08; margin: 10px 0 8px; }
+    .hero p { color: var(--muted); margin: 0; font-size: 1.05rem; }
+    .hero .cta { display:flex; gap:12px; margin-top: 18px; flex-wrap: wrap; }
+    .pill { display:inline-flex; gap:8px; align-items:center; border:1px dashed var(--border); color: var(--muted); border-radius: 999px; padding:6px 10px; font-size: .9rem; }
+    .glow { border-radius: 16px; padding: 18px; background: linear-gradient(135deg, rgba(14,165,233,.12), rgba(34,211,238,.08)); border:1px solid color-mix(in oklab, var(--brand) 28%, var(--border)); }
+
+    .grid { display:grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin: 22px 0 8px; }
+    @media (max-width: 900px) { .hero { grid-template-columns: 1fr; } .grid { grid-template-columns: 1fr; } }
+    .card { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 16px; box-shadow: 0 10px 24px var(--shadow); }
+    .card h3 { margin: 8px 0 6px; font-size: 1.1rem; }
+    .card p { margin: 0; color: var(--muted); font-size: .98rem; }
+
+    section { padding: 20px 0; }
+    section h2 { font-size: 1.5rem; margin: 0 0 8px; }
+    .list { display:grid; gap: 10px; }
+    .item { display:flex; align-items:flex-start; gap: 12px; background: var(--panel); border: 1px solid var(--border); border-radius: 14px; padding: 12px; }
+    .item small { color: var(--muted); }
+
+    .code {
+      background: #0a0f1c; color: #e6edf3; border: 1px solid #101826; border-radius: 12px; padding: 12px; overflow: auto; font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace; font-size: .95rem;
+    }
+    .kbd { display:inline-block; padding:2px 6px; border:1px solid var(--border); border-bottom-width:2px; border-radius:6px; background: var(--panel); font-family: ui-monospace, monospace; font-size:.9rem; }
+    .footer { color: var(--muted); font-size: .95rem; padding: 28px 0 60px; border-top: 1px solid var(--border); margin-top: 28px; }
+    .tag { font-size: .75rem; padding:4px 8px; border-radius:999px; border:1px solid var(--border); color: var(--muted); }
+    .tags { display:flex; flex-wrap: wrap; gap:8px; }
+  </style>
+</head>
+<body>
+  <!--
+    ⚙️ Instrucciones rápidas
+    1) Reemplazá REPO_URL más abajo con la URL real de tu repositorio.
+    2) Opcional: editá los enlaces de secciones y los recursos destacados.
+    3) Subí este archivo como index.html a la raíz de GitHub Pages.
+  -->
+
+  <header>
+    <div class="container nav">
+      <a class="brand" href="#">
+        <span class="logo" aria-hidden="true"></span>
+        <span>SE‑COMISCA · Interoperabilidad</span>
+      </a>
+      <nav style="display:flex; gap:10px; align-items:center;">
+        <a class="link" href="#recursos">Recursos</a>
+        <a class="link" href="#codigo">Código</a>
+        <a class="link" href="#guias">Guías FHIR</a>
+        <a class="link" href="#terminologias">Terminologías</a>
+        <a class="link" href="#contribuir">Contribuir</a>
+        <a id="repoLink" class="btn" href="#" target="_blank" rel="noopener">Ver repositorio</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="hero">
+      <div>
+        <span class="pill">Región SICA · Salud Digital · Interoperabilidad</span>
+        <h1>Recursos y ejemplos para acelerar la <span style="color:var(--brand)">interoperabilidad</span> en salud</h1>
+        <p>Este repositorio reúne guías, componentes reutilizables, ejemplos de código y buenas prácticas para proyectos impulsados por la Secretaría Ejecutiva del COMISCA (SE‑COMISCA). Está pensado para equipos técnicos de Ministerios/Secretarías de Salud, implementadores y comunidad.</p>
+        <div class="cta">
+          <a id="docsLink" class="btn" href="#recursos">Explorar recursos</a>
+          <button id="cloneBtn" class="btn" type="button" title="Copiar comando de clonación">📋 Copiar <span class="kbd">git clone</span></button>
+        </div>
+        <div class="tags" style="margin-top:10px;">
+          <span class="tag">HL7 FHIR</span>
+          <span class="tag">Terminologías</span>
+          <span class="tag">Seguridad</span>
+          <span class="tag">Guías de Implementación</span>
+          <span class="tag">HAPI FHIR</span>
+        </div>
+      </div>
+      <div class="glow">
+        <div class="grid">
+          <div class="card">
+            <h3>Guías & Playbooks</h3>
+            <p>Lineamientos prácticos para gobernanza, modelos de datos, seguridad y despliegue.</p>
+          </div>
+          <div class="card">
+            <h3>Ejemplos de Código</h3>
+            <p>Snippets y proyectos de referencia (REST, perfiles, validación, SMART on FHIR).</p>
+          </div>
+          <div class="card">
+            <h3>Terminologías</h3>
+            <p>ValueSets, CodeSystems y mejores prácticas para servicios de terminología.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section id="recursos">
+      <h2>Recursos destacados</h2>
+      <div class="list">
+        <article class="item">
+          <div>📘</div>
+          <div>
+            <a href="#guias"><strong>Guía rápida FHIR para equipos SICA</strong></a>
+            <div><small>Perfiles básicos, recursos clave y patrones de intercambio.</small></div>
+          </div>
+        </article>
+        <article class="item">
+          <div>🧰</div>
+          <div>
+            <a href="#codigo"><strong>Starter: servidor HAPI FHIR (Docker)</strong></a>
+            <div><small>Compose listo para levantar, con apuntes de seguridad y validación.</small></div>
+          </div>
+        </article>
+        <article class="item">
+          <div>🧩</div>
+          <div>
+            <a href="#terminologias"><strong>ValueSets regionales (ejemplos)</strong></a>
+            <div><small>Conjunto de valores y bindings sugeridos (preferred/ extensible).</small></div>
+          </div>
+        </article>
+      </div>
+    </section>
+
+    <section id="codigo">
+      <h2>Cloná el repositorio</h2>
+      <pre class="code" id="cloneCmd">git clone https://github.com/ORG/REPO.git</pre>
+      <p style="color:var(--muted); margin-top:8px;">Reemplazá <code>ORG/REPO</code> por tu organización/nombre real.</p>
+    </section>
+
+    <section id="guias">
+      <h2>Guías FHIR & ejemplos</h2>
+      <div class="grid">
+        <div class="card">
+          <h3>Perfiles y Extensiones</h3>
+          <p>Ejemplos en FSH/JSON, validación con SUSHI, publicación con IG Publisher.</p>
+        </div>
+        <div class="card">
+          <h3>Transacciones REST</h3>
+          <p>Bundle <code>transaction</code>/<code>batch</code>, búsqueda y paginación, includes/revIncludes.</p>
+        </div>
+        <div class="card">
+          <h3>Seguridad</h3>
+          <p>OAuth2/OIDC (Keycloak + OAuth2 Proxy), scopes SMART on FHIR, mejores prácticas.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="terminologias">
+      <h2>Terminologías</h2>
+      <div class="list">
+        <div class="item">
+          <div>🔎</div>
+          <div>
+            <strong>Servicios de Terminología</strong>
+            <div><small>Uso de $expand, $validate-code, $translate, andamiaje para servidores locales.</small></div>
+          </div>
+        </div>
+        <div class="item">
+          <div>🗂️</div>
+          <div>
+            <strong>ValueSets regionales</strong>
+            <div><small>Ejemplos para etnias, ocupaciones, y catálogos clínicos frecuentes.</small></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>Estructura sugerida del repositorio</h2>
+      <pre class="code">/
+├─ docs/                 # Guías, lineamientos, diagramas
+├─ examples/             # Proyectos de referencia / PoCs
+│  ├─ hapi-docker/
+│  └─ smart-on-fhir/
+├─ terminology/          # ValueSets, CodeSystems, ConceptMaps
+├─ ig/                   # FSH, SUSHI, IG Publisher
+└─ tools/                # Scripts, validadores, utilidades
+</pre>
+    </section>
+
+    <section id="contribuir">
+      <h2>Cómo contribuir</h2>
+      <ol>
+        <li>Creá un <em>issue</em> describiendo la propuesta o el problema.</li>
+        <li>Hacé un fork, creá una rama (<code>feat/...</code> o <code>fix/...</code>) y enviá un PR.</li>
+        <li>Seguí la guía de estilo y las normas de contribución del repositorio.</li>
+      </ol>
+      <div class="cta" style="margin-top:10px;">
+        <a id="issuesLink" class="btn" href="#" target="_blank" rel="noopener">Abrir un Issue</a>
+        <a id="pullsLink" class="btn" href="#" target="_blank" rel="noopener">Enviar un Pull Request</a>
+      </div>
+    </section>
+
+    <section>
+      <h2>Licencia</h2>
+      <p>Salvo indicación en contrario, el contenido se publica bajo <strong>MIT</strong>. Ver <code>LICENSE</code> en el repositorio.</p>
+    </section>
+
+    <footer class="footer">
+      <div>© <span id="year"></span> SE‑COMISCA · Comunidad de Interoperabilidad — Región SICA.</div>
+      <div>¿Dudas o sugerencias? Abrí un issue en el repositorio.</div>
+    </footer>
+  </main>
+
+  <script>
+    // 🔧 CONFIGURACIÓN: reemplazá esta URL con la de tu repo
+    const REPO_URL = "https://github.com/ORG/REPO"; // ← ← ← EDITAR
+
+    // Enlaces derivados
+    const repoLink = document.getElementById('repoLink');
+    const issuesLink = document.getElementById('issuesLink');
+    const pullsLink = document.getElementById('pullsLink');
+    const cloneCmd = document.getElementById('cloneCmd');
+
+    repoLink.href = REPO_URL;
+    issuesLink.href = REPO_URL + '/issues';
+    pullsLink.href = REPO_URL + '/pulls';
+    cloneCmd.textContent = `git clone ${REPO_URL}.git`;
+
+    // Copiar comando
+    document.getElementById('cloneBtn').addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(cloneCmd.textContent.trim());
+        const original = cloneCmd.textContent;
+        cloneCmd.textContent = '✅ Copiado al portapapeles';
+        setTimeout(()=> cloneCmd.textContent = original, 1400);
+      } catch (e) {
+        alert('No se pudo copiar. Copialo manualmente.');
+      }
+    });
+
+    // Año dinámico
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+</body>
+</html>
